@@ -1,0 +1,28 @@
+{
+    "Livres": [
+        {
+            "id": 1,
+            "name": "Belgariade",
+            "style": "Fantasy",
+            "dispo": 1
+    },
+        {
+            "id": 3,
+            "name": "Dune",
+            "style": "Science Fiction",
+            "dispo": 4
+    },
+        {
+            "id": 2,
+            "name": "Le crime de l'orient express",
+            "style": "Policier",
+            "dispo": 1
+    },
+        {
+            "id": 4,
+            "name": "Next Generation Internet of Things",
+            "style": "Education",
+            "dispo": 3
+    }
+  ]
+}
