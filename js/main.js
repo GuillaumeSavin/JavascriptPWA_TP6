@@ -1,16 +1,5 @@
+const localStorage = window.localStorage;
 let livres = [];
-class livre {
-    constructor(name, style, dispo) {
-        this.name = name;
-        this.style = style;
-        this.dispo = dispo;
-    }
-
-    toShow()
-    {
-        return "name: " + this.name + "\nstyle: " + this.style + "\ndispo: " + this.dispo;
-    }
-}
 
 async function fetchLivres() {
     let response = await fetch('http://127.0.0.1:3001/livres');
@@ -63,21 +52,36 @@ function btnClicked(event) {
     addToCart(tmpLivre);
 }
 
-function addToCart(livre)
+function addToCart(livreAjouté)
 {
-    for(let i = 0; i < livres.length; i ++)
-    {
-        console.log(livres[i].toShow());
-    }
-    console.log("\n");
-    livres.push(livre);
-    for(let i = 0; i < livres.length; i ++)
-    {
-        console.log(livres[i].toShow());
-    }
-    console.log("\n");
-    const localStorage = window.localStorage;
-    localStorage.setItem("livres", livres);
+    livres.length = 0;
+    let localCart = JSON.parse(localStorage.getItem("livres"));
+    if (localCart) {
+        localCart.forEach(element => {
+            let lname = element.name.slice(element.name.indexOf(':') + 1);
+            let lstyle = element.style.slice(element.style.indexOf(':') + 1);
+            let ldispo = element.dispo.slice(element.dispo.indexOf(':') + 1);
 
-    let testLocalStorage = localStorage.getItem("livres");
+            let tmpLivre = new livre(lname, lstyle, ldispo);
+
+            livres.push(tmpLivre);
+        });
+    }
+
+    livres.push(livreAjouté);
+
+    localStorage.setItem("livres", JSON.stringify(livres));
+
+    if(window.Notification && window.Notification !== 'denied') {
+        Notification.requestPermission(perm => { // On demande l’autorisation
+            if (perm === 'granted') { // Si l’autorisation est accordée
+                const options = { // Le message associé à la notification
+                    body: livreAjouté.name.replace(':', '') + ' ajouté au panier'
+                }
+                const notif = new Notification('Panier', options); // Notification crée
+            } else {
+                console.log('Autorisation de recevoir des notifications refusée');
+            }
+        });
+    }
 }
